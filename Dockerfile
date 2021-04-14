@@ -1,3 +1,8 @@
+ARG FOREGO_VERSION=0.16.1
+
+# Use a specific version of golang to build both binaries
+FROM golang:1.15.10 as gobuilder
+
 # Build forego from scratch
 # Because this relies on golang workspaces, we need to use go < 1.8. 
 FROM gobuilder as forego
