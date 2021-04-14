@@ -32,6 +32,7 @@ RUN sh -c 'go get -d -v && go build monitor.go'
 
 
 FROM ubuntu:latest
+WORKDIR /app
 
 RUN apt-get update \
  && apt-get install -y -q --no-install-recommends \
@@ -42,7 +43,7 @@ RUN apt-get update \
 COPY Procfile /app/
 
 # Install Forego + docker-gen
-COPY --from=monitor /go/src/app/monitor /app/
+COPY --from=monitor /go/src/app/monitor /usr/local/bin/monitor
 COPY --from=forego /go/src/github.com/ddollar/forego/forego /usr/local/bin/forego
 
 ENV DOMAIN_TLD dev
