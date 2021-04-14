@@ -40,14 +40,16 @@ RUN apt-get update \
  && apt-get clean \
  && rm -r /var/lib/apt/lists/*
 
-COPY Procfile /app/
+COPY Procfile docker-entrypoint.sh .
 
 # Install Forego + docker-gen
 COPY --from=monitor /go/src/app/monitor /usr/local/bin/monitor
 COPY --from=forego /go/src/github.com/ddollar/forego/forego /usr/local/bin/forego
 
 ENV DOMAIN_TLD dev
+ENV DOCKER_NETWORK shared
 ENV DNS_IP 127.0.0.1
 ENV HOSTMACHINE_IP 127.0.0.1
 
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD ["forego", "start", "-r"]
