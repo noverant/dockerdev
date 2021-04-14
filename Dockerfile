@@ -1,7 +1,7 @@
 ARG FOREGO_VERSION=0.16.1
 
 # Use a specific version of golang to build both binaries
-FROM golang:1.15.10 as gobuilder
+FROM golang:1.15 as gobuilder
 
 # Build forego from scratch
 # Because this relies on golang workspaces, we need to use go < 1.8. 
@@ -22,7 +22,7 @@ RUN go get -v ./... && \
    CGO_ENABLED=0 GOOS=linux go build -o forego .
 
 
-FROM golang:1.15
+FROM gobuilder as monitor
 ENV GO111MODULE="on"
 WORKDIR /go/src/app
 
@@ -42,7 +42,7 @@ RUN apt-get update \
 COPY Procfile /app/
 
 # Install Forego + docker-gen
-COPY --from=0 /go/src/app/monitor /app/
+COPY --from=monitor /go/src/app/monitor /app/
 COPY --from=forego /go/src/github.com/ddollar/forego/forego /usr/local/bin/forego
 
 ENV DOMAIN_TLD dev
