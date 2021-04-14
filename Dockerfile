@@ -1,3 +1,11 @@
+FROM golang:1.15
+ENV GO111MODULE="on"
+WORKDIR /go/src/app
+
+COPY monitor.go go.mod .
+
+RUN sh -c 'go get -d -v && go build monitor.go'
+
 FROM jwilder/nginx-proxy:latest
 
 RUN apt-get update \
@@ -10,7 +18,8 @@ RUN apt-get update \
 COPY *.conf /etc/nginx/conf.d/
 
 # override nginx-proxy templating
-COPY nginx.tmpl Procfile monitor /app/
+COPY --from=0 /go/src/app/monitor /app/
+COPY nginx.tmpl Procfile /app/
 
 # COPY htdocs /var/www/default/htdocs/
 
