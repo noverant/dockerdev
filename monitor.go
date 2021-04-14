@@ -20,6 +20,7 @@ func main() {
 	}
 
 	domain := os.Getenv("DOMAIN_TLD")
+	network := os.Getenv("DOCKER_NETWORK")
 
 	log.Println("Listening events")
 	for {
@@ -38,15 +39,15 @@ func main() {
 
 				if oneoff == "False" {
 					alias := service + "." + project + "." + domain
-					log.Printf("Attaching %s to the shared network with alias %s\n", containerName, alias)
+					log.Printf("Attaching %s to the %s network with alias %s\n", containerName, network, alias)
 					config.EndpointConfig = &docker.EndpointConfig{
 						Aliases: []string{alias},
 					}
 				} else {
-					log.Printf("Attaching %s to the shared network\n", event.Actor.ID)
+					log.Printf("Attaching %s to the %s network\n", event.Actor.ID, network)
 				}
 
-				err := cli.ConnectNetwork("shared", config)
+				err := cli.ConnectNetwork(network, config)
 				if err != nil {
 					log.Fatal(err)
 				}
