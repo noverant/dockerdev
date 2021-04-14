@@ -30,11 +30,10 @@ func main() {
 			containerName := event.Actor.Attributes["name"]
 			log.Printf("New container (%s) created\n", containerName)
 
-			project, hasProject := event.Actor.Attributes["com.docker.compose.project"]
 			service, hasService := event.Actor.Attributes["com.docker.compose.service"]
 			oneoff := event.Actor.Attributes["com.docker.compose.oneoff"]
 
-			if hasProject && hasService {
+			if hasService {
 				config := docker.NetworkConnectionOptions{Container: event.Actor.ID}
 
 				if oneoff == "False" {
