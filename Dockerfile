@@ -6,7 +6,7 @@ COPY monitor.go go.mod .
 
 RUN sh -c 'go get -d -v && go build monitor.go'
 
-FROM jwilder/nginx-proxy:latest
+FROM ubuntu:latest
 
 RUN apt-get update \
  && apt-get install -y -q --no-install-recommends \
@@ -14,12 +14,9 @@ RUN apt-get update \
  && apt-get clean \
  && rm -r /var/lib/apt/lists/*
 
-# override nginx configs
-COPY *.conf /etc/nginx/conf.d/
-
 # override nginx-proxy templating
 COPY --from=0 /go/src/app/monitor /app/
-COPY nginx.tmpl Procfile /app/
+COPY Procfile /app/
 
 # COPY htdocs /var/www/default/htdocs/
 

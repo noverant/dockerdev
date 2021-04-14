@@ -38,7 +38,7 @@ func main() {
 				config := docker.NetworkConnectionOptions{Container: event.Actor.ID}
 
 				if oneoff == "False" {
-					alias := service + "." + project + "." + domain
+					alias := service + "." + domain
 					log.Printf("Attaching %s to the %s network with alias %s\n", containerName, network, alias)
 					config.EndpointConfig = &docker.EndpointConfig{
 						Aliases: []string{alias},
